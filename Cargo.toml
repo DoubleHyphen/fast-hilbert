@@ -10,12 +10,17 @@ license = "MIT"
 categories = ["algorithms"]
 repository = "https://github.com/becheran/fast-hilbert"
 
+[dependencies]
+num-traits = "*"
+rand = "*"
+
 [dev-dependencies]
 image = "0.23.13"
 criterion = "0.3"
 hilbert = "0.1.1"
 hilbert_2d = "1.0.0"
 hilbert_curve = "0.2.0"
+lindel = "*"
 
 [[bench]]
 name = "benchmark"
