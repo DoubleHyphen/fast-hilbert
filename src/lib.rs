@@ -57,6 +57,7 @@ impl Double for  u8 {type Key =  u16; const SEVEN: Self = 7; const SIXTY_THREE: 
 impl Double for u32 {type Key =  u64; const SEVEN: Self = 7; const SIXTY_THREE: Self::Key = 63;}
 
 /// This is DEEP MAGIC. Took me a full day to figure out.
+#[inline(always)]
 fn _state_after_the_first_byte_of_a_larger_2d_hilbert_key_imperative (x: u8) -> u8 {
         let b = x & 0xAA;
         let mut c = x - (b>>1);
@@ -65,11 +66,13 @@ fn _state_after_the_first_byte_of_a_larger_2d_hilbert_key_imperative (x: u8) -> 
         c & 3
 }
 
+#[inline(always)]
 fn _state_after_the_first_byte_of_a_larger_2d_hilbert_key_lut (x: u8) -> u8 {
     const STATE_LUT: [u8; 256] = [0, 1, 1, 2, 1, 0, 0, 3, 1, 0, 0, 3, 2, 3, 3, 0, 1, 0, 0, 3, 0, 1, 1, 2, 0, 1, 1, 2, 3, 2, 2, 1, 1, 0, 0, 3, 0, 1, 1, 2, 0, 1, 1, 2, 3, 2, 2, 1, 2, 3, 3, 0, 3, 2, 2, 1, 3, 2, 2, 1, 0, 1, 1, 2, 1, 0, 0, 3, 0, 1, 1, 2, 0, 1, 1, 2, 3, 2, 2, 1, 0, 1, 1, 2, 1, 0, 0, 3, 1, 0, 0, 3, 2, 3, 3, 0, 0, 1, 1, 2, 1, 0, 0, 3, 1, 0, 0, 3, 2, 3, 3, 0, 3, 2, 2, 1, 2, 3, 3, 0, 2, 3, 3, 0, 1, 0, 0, 3, 1, 0, 0, 3, 0, 1, 1, 2, 0, 1, 1, 2, 3, 2, 2, 1, 0, 1, 1, 2, 1, 0, 0, 3, 1, 0, 0, 3, 2, 3, 3, 0, 0, 1, 1, 2, 1, 0, 0, 3, 1, 0, 0, 3, 2, 3, 3, 0, 3, 2, 2, 1, 2, 3, 3, 0, 2, 3, 3, 0, 1, 0, 0, 3, 2, 3, 3, 0, 3, 2, 2, 1, 3, 2, 2, 1, 0, 1, 1, 2, 3, 2, 2, 1, 2, 3, 3, 0, 2, 3, 3, 0, 1, 0, 0, 3, 3, 2, 2, 1, 2, 3, 3, 0, 2, 3, 3, 0, 1, 0, 0, 3, 0, 1, 1, 2, 1, 0, 0, 3, 1, 0, 0, 3, 2, 3, 3, 0];
     STATE_LUT[x as usize]
 }
 
+#[inline(always)]
 fn _state_after_the_first_byte_of_a_larger_2d_hilbert_key_lut_packed (x: u8) -> u8 {
     const STATE_LUT_PACKED: [u8; 64] = [148, 193, 193, 62, 193, 148, 148, 107, 193, 148, 148, 107, 62, 107, 107, 148, 193, 148, 148, 107, 148, 193, 193, 62, 148, 193, 193, 62, 107, 62, 62, 193, 193, 148, 148, 107, 148, 193, 193, 62, 148, 193, 193, 62, 107, 62, 62, 193, 62, 107, 107, 148, 107, 62, 62, 193, 107, 62, 62, 193, 148, 193, 193, 62];
     let four_states = STATE_LUT_PACKED[(x>>2) as usize];
@@ -77,10 +80,12 @@ fn _state_after_the_first_byte_of_a_larger_2d_hilbert_key_lut_packed (x: u8) -> 
     (four_states>>slider) & 3
 }
 
+#[inline(always)]
 fn state_after_the_first_byte_of_a_larger_2d_hilbert_key (x: u8) -> u8 {
     _state_after_the_first_byte_of_a_larger_2d_hilbert_key_imperative(x)
 }
 
+#[inline(always)]
 fn rotate_depending_on_prev_state_2d<'a, T: Double>(x: &'a mut T, y: &'a mut T, state: u8) {
     let neg = |x: &mut T| *x = !(*x);
     if state & 1 != 0 {core::mem::swap(x, y);}

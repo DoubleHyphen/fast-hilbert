@@ -4,6 +4,33 @@ fn criterion_benchmark(c: &mut Criterion) {
     let bits: usize = 32;
     let n: usize = 2usize.pow(bits as u32);
 
+    c.bench_function("fast_hilbert_experimental", |b| {
+        b.iter(|| {
+            fast_hilbert::xy2h_experimental_u32_2d(
+                black_box(42 as u32),
+                black_box(42 as u32),
+            );
+        })
+    });
+
+    c.bench_function("fast_hilbert", |b| {
+        b.iter(|| {
+            fast_hilbert::xy2h(
+                black_box(42 as u32),
+                black_box(42 as u32),
+            );
+        })
+    });
+
+    c.bench_function("lindel", |b| {
+        b.iter(|| {
+            lindel::hilbert_encode([
+                black_box(42 as u32),
+                black_box(42 as u32),
+            ]);
+        })
+    });
+
     c.bench_function("hilbert_curve", |b| {
         b.iter(|| {
             hilbert_curve::convert_2d_to_1d(black_box(42), black_box(42), black_box(n));
@@ -25,16 +52,6 @@ fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| {
             let p = hilbert::Point::new(0, &[black_box(42 as u32), black_box(42 as u32)]);
             p.hilbert_transform(black_box(bits))
-        })
-    });
-
-    c.bench_function("fast_hilbert", |b| {
-        b.iter(|| {
-            fast_hilbert::xy2h(
-                black_box(42 as u32),
-                black_box(42 as u32),
-                black_box(bits as u8),
-            );
         })
     });
 }
